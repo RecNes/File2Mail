@@ -1,4 +1,4 @@
 file2mail
 =========
 
-Aautomatically send files by e-mail
+Automatically send files by e-mail
