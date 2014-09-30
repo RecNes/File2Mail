@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="${request.locale_name}">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="pyramid web application">
+    <meta name="author" content="Pylons Project">
+    <link rel="shortcut icon" href="${request.static_url('file2mail:static/pyramid-16x16.png')}">
+
+    <title>${project}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="//oss.maxcdn.com/libs/twitter-bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this scaffold -->
+    <link href="${request.static_url('file2mail:static/theme.css')}" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="//oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="//oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+    <%block name="header"/>
+</head>
+
+<body>
+
+<div class="starter-template">
+    <div class="container">
+        ${self.body()}
+    </div>
+</div>
+
+<div class="footer">
+    <%block name="footer">
+    <div class="row">
+        <div class="links">
+            <ul>
+                <li>
+                    <i class="glyphicon glyphicon-info-sign icon-muted"></i>
+                    <a href="#">File Queue</a>
+                </li>
+                <li>
+                    <i class="glyphicon glyphicon-ok-sign icon-muted"></i>
+                    <a href="#">Sent Files</a>
+                </li>
+                <li>
+                    <i class="glyphicon glyphicon-warning-sign icon-muted"></i>
+                    <a href="#">Failed Files</a>
+                </li>
+                <li>
+                    <i class="glyphicon glyphicon-cog icon-muted"></i>
+                    <a href="#">E-Mail Config</a>
+                </li>
+                <li>
+                    <i class="glyphicon glyphicon-chevron-up icon-muted"></i>
+                    <a href="#">General Config</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">&nbsp;</div>
+    <div class="col-xs-1 pull-right">
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/">
+            <img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" />
+        </a>
+    </div>
+    <div class="col-xs-10 pull-left">
+        <span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/Dataset" property="dct:title" rel="dct:type">
+            ${project}
+        </span> by
+        <a xmlns:cc="http://creativecommons.org/ns#" href="http://www.recnes.com/" property="cc:attributionName" rel="cc:attributionURL" style="color: inherit !important;">
+            <span class="font-bold" style="color: inherit !important;">Sencer Hamarat</span>
+        </a>
+        is licensed under a
+        <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" style="color: inherit !important;">
+            <span class="font-semi-bold" style="color: inherit !important;">
+                Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License
+            </span>
+        </a>.
+    </div>
+    </%block>
+</div>
+
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//oss.maxcdn.com/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//oss.maxcdn.com/libs/twitter-bootstrap/3.0.3/js/bootstrap.min.js"></script>
+</body>
+</html>
