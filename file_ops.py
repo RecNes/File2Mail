@@ -19,6 +19,7 @@ class FSTools():
     """
     def __init__(self, directory=None):
         if directory is None:
+            log.error(u"No directory name or path given.")
             raise Exception(u"No directory name or path given.")
         self.directory = directory
 
@@ -28,21 +29,21 @@ class FSTools():
             os.makedirs(self.directory)
             created = True
         except Exception as e:
-            log.error(e.message)
+            log.exception(e.message)
         finally:
             return created
 
     def check_directory(self):
-        return True if os.path.exists(self.directory) else False
+        return os.path.exists(self.directory)
 
     def safe_make_directory(self):
         if not self.check_directory():
-            try:
-                self.make_directory()
-            except Exception as e:
-                log.error(e)
+            if not self.make_directory():
+                log.error(u"Unable to create directory: <<{directory}>>".format(directory=self.directory))
+            else:
+                log.info(u"Directory created: <<{directory}>>".format(directory=self.directory))
         else:
-            log.warning(u"Folder exsists: {directory}".format(directory=self.directory))
+            log.warning(u"Directory exsists: <<{directory}>>".format(directory=self.directory))
 
     @property
     def user_path(self):
