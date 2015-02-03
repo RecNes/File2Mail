@@ -22,8 +22,8 @@ class Email():
         self.host = 'mail.yapifizigi.com' if host is None else host
         self.port = 587 if port is None else port
         self.tls = True if tls is None else tls
-        self.smtp_user = 'sencer@yapifizigi.com' if user is None else user
-        self.smtp_pass = 'k1ng.0fpa1n-' if password is None else password
+        self.smtp_user = '' if user is None else user
+        self.smtp_pass = '' if password is None else password
         self.sender = 'fax@yapifizigi.com'
         self.dir = self.get_file_list.target_dir_path
         self.recipients = ['sencerhamarat@gmail.com'] if recipients is None else recipients
