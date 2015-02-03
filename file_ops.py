@@ -3,6 +3,7 @@
 Application file operations
 """
 import os
+import shutil
 from logger import log
 
 __author__ = 'Sencer Hamarat'
@@ -60,7 +61,8 @@ class GetFileList():
     def __init__(self, target_dir=None, exclude=None):
         self.excluded_file_types = [".db"] if exclude is None else exclude
         self.target_dir = u"Documents\\Gelen Fax" if target_dir is None else target_dir
-        self.target_dir_path = FSTools(self.target_dir).target_dir_path()
+        self.fstools = FSTools(self.target_dir)
+        self.target_dir_path = self.fstools.target_dir_path()
         self.file_list = os.listdir(self.target_dir_path)
         self.filtered_list = self.exclude_files()
 
@@ -72,13 +74,20 @@ class GetFileList():
         return self.file_list
 
 
-class MoveSentFiles():
+class MoveSentFile():
     """
-    Moves files in given directory to target directory
+    Moves file in given directory to target directory
     """
-    def __init__(self, target_dir=None, files_list=None):
+    def __init__(self, target_dir=None, file=None):
         self.target_dir = u"Documents\\Gelen Fax\\İletildi" if target_dir is None else target_dir
-        self.sent_files = files_list
+        self.sent_file = file
         self.fstools = FSTools(self.target_dir)
         self.fstools.safe_make_directory()
         self.target_dir_path = self.fstools.target_dir_path()
+        self.source_dir_path = GetFileList().target_dir_path
+
+    def move_file(self):
+        try:
+            shutil.move(self.source_dir_path, self.target_dir_path)
+        except Exception as e:
+            log.error(e)
