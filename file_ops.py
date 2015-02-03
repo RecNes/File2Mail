@@ -1,20 +1,67 @@
 # -*- coding: utf-8 -*-
+"""
+Application file operations
+"""
 import os
+from logger import log
 
 __author__ = 'Sencer Hamarat'
 
 
-class GetFileList():
-    def __init__(self, target_folder=None):
-        self.target_dir = u"Documents\\Gelen Fax" if target_folder is None else target_folder
-        self.excluded_file_types = [".db"]
-        self.target_dir_path = os.path.join(self.user_path, self.target_dir)
-        self.file_list = os.listdir(self.target_dir_path)
-        self.filtered_list = self.exclude_files()
+class FSTools():
+    """
+    File System Tools Class
+    create_directory: Creates directory in given path
+    control_directory: Checks directory existence in given path
+    safe_make_directory: Cehcks directory existence before make
+    user_path: Returns current user home directory path
+    target_dir_path: Returns given target directory full path under current user
+    """
+    def __init__(self, directory=None):
+        if directory is None:
+            raise Exception(u"No directory name or path given.")
+        self.directory = directory
+
+    def make_directory(self):
+        created = False
+        try:
+            os.makedirs(self.directory)
+            created = True
+        except Exception as e:
+            log.error(e.message)
+        finally:
+            return created
+
+    def check_directory(self):
+        return True if os.path.exists(self.directory) else False
+
+    def safe_make_directory(self):
+        if not self.check_directory():
+            try:
+                self.make_directory()
+            except Exception as e:
+                log.error(e)
+        else:
+            log.warning(u"Folder exsists: {directory}".format(directory=self.directory))
 
     @property
     def user_path(self):
         return os.path.expanduser("~")
+
+    def target_dir_path(self):
+        return os.path.join(self.user_path, self.directory)
+
+
+class GetFileList():
+    """
+    Returns files list in given target directory
+    """
+    def __init__(self, target_dir=None, exclude=None):
+        self.excluded_file_types = [".db"] if exclude is None else exclude
+        self.target_dir = u"Documents\\Gelen Fax" if target_dir is None else target_dir
+        self.target_dir_path = FSTools(self.target_dir).target_dir_path()
+        self.file_list = os.listdir(self.target_dir_path)
+        self.filtered_list = self.exclude_files()
 
     def exclude_files(self):
         for x in self.excluded_file_types:
@@ -24,11 +71,13 @@ class GetFileList():
         return self.file_list
 
 
-
-
-
 class MoveSentFiles():
-    def __init__(self, files_list=None):
+    """
+    Moves files in given directory to target directory
+    """
+    def __init__(self, target_dir=None, files_list=None):
+        self.target_dir = u"Documents\\Gelen Fax\\İletildi" if target_dir is None else target_dir
         self.sent_files = files_list
-        self.gfl = GetFileList()
-        self.target_dir_path = os.path.join(self.gfl.user_path, self.gfl.target_dir, u"İletildi")
+        self.fstools = FSTools(self.target_dir)
+        self.fstools.safe_make_directory()
+        self.target_dir_path = self.fstools.target_dir_path()
