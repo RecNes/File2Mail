@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import ast
 import os
 from os.path import isfile
 
@@ -34,6 +35,11 @@ class ConfigLoader():
 
             if not hasattr(self.config, "log_level"):
                 self.config["log_level"] = ''
+
+            if self.config["port"]:
+                self.config["port"] = int(self.config["port"])
+
+            self.config["recipients"] = ast.literal_eval(self.config["recipients"])
 
             return self.config
         except Exception as e:
