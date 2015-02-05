@@ -64,6 +64,7 @@ class GetFileList():
         self.target_dir_path = self.fstools.target_dir_path()
         self.file_list = os.listdir(self.target_dir_path)
         self.filtered_list = self.exclude_files()
+        self.full_file_list = [os.path.join(self.target_dir_path, f) for f in self.filtered_list]
 
     def exclude_files(self):
         for x in self.excluded_file_types:
