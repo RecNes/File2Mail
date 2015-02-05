@@ -20,7 +20,6 @@ class FSTools():
     """
     def __init__(self, directory=None):
         if directory is None:
-            log.error(u"No directory name or path given.")
             raise Exception(u"No directory name or path given.")
         self.directory = directory
 
@@ -78,16 +77,16 @@ class MoveSentFile():
     """
     Moves file in given directory to target directory
     """
-    def __init__(self, target_dir=None, file=None):
+    def __init__(self, target_dir=None, files=None):
         self.target_dir = u"Documents\\Gelen Fax\\İletildi" if target_dir is None else target_dir
-        self.sent_file = file
         self.fstools = FSTools(self.target_dir)
         self.fstools.safe_make_directory()
         self.target_dir_path = self.fstools.target_dir_path()
-        self.source_dir_path = GetFileList().target_dir_path
+        self.source_files = files
 
-    def move_file(self):
-        try:
-            shutil.move(self.source_dir_path, self.target_dir_path)
-        except Exception as e:
-            log.error(e)
+    def do(self):
+        for source_file in self.source_files:
+            try:
+                shutil.move(source_file, self.target_dir_path)
+            except Exception as e:
+                log.error(e)
