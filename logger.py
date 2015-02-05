@@ -2,7 +2,7 @@
 import logging
 import os
 from datetime import date
-from settings import Settings
+from settings import SETTINGS, PROJECT_ROOT
 
 __author__ = 'Sencer Hamarat'
 
@@ -28,9 +28,9 @@ class Logger:
         self.__configure_handler(log_dir)
 
     def __configure_level(self, level):
-        if level not in ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']:
+        if level.upper() not in ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']:
             raise Exception(u"{} geçerli bir log seviyesi değil".format(level))
-        self.level = 'DEBUG' if Settings.DEBUG else level
+        self.level = SETTINGS["log_level"] if SETTINGS["log_level"] else self.level
 
     def __configure_format(self, log_format):
         if log_format:
@@ -38,7 +38,7 @@ class Logger:
         self.formatter = logging.Formatter(self.log_format)
 
     def __configure_handler(self, log_dir):
-        _dir = '{}/{}'.format(Settings.PROJECT_ROOT, log_dir)
+        _dir = '{}/{}'.format(PROJECT_ROOT, log_dir)
         if not os.path.exists(_dir):
             os.mkdir(_dir)
         _filename = "{}/{}.log".format(_dir, self.log_name)

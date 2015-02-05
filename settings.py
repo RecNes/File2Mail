@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 from os.path import isfile
-from logger import log
 
 __author__ = 'Sencer Hamarat'
 
@@ -14,7 +13,7 @@ class ConfigLoader():
         self.content = None
         self.config = dict()
         self.file_name = "file2mail.conf"
-        self.file = "{root}/{file}".format(root=Settings.PROJECT_ROOT, file=self.file_name)
+        self.file = "{root}/{file}".format(root=PROJECT_ROOT, file=self.file_name)
 
     def read_config(self):
         try:
@@ -31,21 +30,16 @@ class ConfigLoader():
                         key, value = line.split('=')
                         self.config[key] = value
             except Exception as e:
-                log.exception(e.message)
-                raise Exception(u"Error in configuration file: <<{file}>>".format(file=self.file))
+                raise Exception(e.message.join(u"Error in configuration file: <<{file}>>".format(file=self.file)))
+
+            if not hasattr(self.config, "log_level"):
+                self.config["log_level"] = ''
 
             return self.config
-
         except Exception as e:
-            log.exception(e.message)
+            raise Exception(e.message)
 
 
-class Settings():
-    def __init__(self):
-        self.settings = ConfigLoader().read_config()
-        if not "DEBUG" in self.settings:
-            self.settings["DEBUG"] = False
-
-    PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-    SETTINGS = __init__().settings
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+SETTINGS = ConfigLoader().read_config()
 
