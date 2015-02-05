@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import ast
 import os
-from os.path import isfile
 
 __author__ = 'Sencer Hamarat'
 
@@ -17,8 +16,12 @@ class ConfigLoader():
         self.file = "{root}/{file}".format(root=PROJECT_ROOT, file=self.file_name)
 
     def read_config(self):
+        """
+        Reads settings from file2mail.conf file and applies evaluations to necessary values
+        :return: dict()
+        """
         try:
-            if isfile(self.file):
+            if os.path.isfile(self.file):
                 with open(self.file, mode='r') as _file:
                     self.content = _file.readlines()
             else:
@@ -48,4 +51,3 @@ class ConfigLoader():
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 SETTINGS = ConfigLoader().read_config()
-
