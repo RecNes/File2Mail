@@ -8,11 +8,11 @@ __author__ = 'Sencer Hamarat'
 
 class ConfigLoader():
     """
-    Reading Configuration file.
+    Read and parse Configuration file.
     """
     def __init__(self):
         self.content = None
-        self.content_dict = dict()
+        self.config = dict()
         self.file_name = "file2mail.conf"
         self.file = "{root}/{file}".format(root=Settings.PROJECT_ROOT, file=self.file_name)
 
@@ -22,20 +22,19 @@ class ConfigLoader():
                 with open(self.file, mode='r') as _file:
                     self.content = _file.readlines()
             else:
-                hata = u'Configuration file not found: <<{file}>>'.format(file=self.file)
-                log.error(hata)
+                raise Exception(u'Configuration file not found: <<{file}>>'.format(file=self.file))
+
             try:
                 for line in self.content:
                     if (not line.startswith('#')) and ('=' in line):
                         line = line.replace('\r', '').replace('\n', '').replace(' ', '')
                         key, value = line.split('=')
-                        self.content_dict[key] = value
+                        self.config[key] = value
             except Exception as e:
                 log.exception(e.message)
-                log.error(u"Error in configuration file: <<{file}>>".format(file=self.file))
-                raise Exception(u"ERROR: Configuration error...")
+                raise Exception(u"Error in configuration file: <<{file}>>".format(file=self.file))
 
-            return self.content
+            return self.config
 
         except Exception as e:
             log.exception(e.message)
@@ -43,9 +42,10 @@ class ConfigLoader():
 
 class Settings():
     def __init__(self):
-        pass
+        self.settings = ConfigLoader().read_config()
+        if not "DEBUG" in self.settings:
+            self.settings["DEBUG"] = False
 
-    DEBUG = False
     PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-
+    SETTINGS = __init__().settings
 
