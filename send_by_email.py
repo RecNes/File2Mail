@@ -30,8 +30,11 @@ class Email():
         self.sent_attachments = list()
 
     def __attach_file(self, attachment):
-        # Content tipini dosya uzantısından tahmin edeceğiz. Dosyanın Encoding'i görmezden gelinecek
-        # fakat dosyanın basit özellikleri kontrol edilecek; Örn: gzip'limi yoksa sıkıştırılmış dosya mı, gibi.
+        """
+        Guess content type of the attachment, prepare header with this knowledge and attach file to message
+        :param attachment:
+        :return: None
+        """
         ctype, encoding = mimetypes.guess_type(attachment)
         if ctype is None or encoding is not None:
             ctype = 'application/octet-stream'
@@ -60,6 +63,10 @@ class Email():
         self.outer.attach(msg)
 
     def _prepare_email(self, attachment):
+        """
+        Prepare e-mail body and append attachments
+        """
+
         self.outer = MIMEMultipart()
         self.outer['Subject'] = 'You have a new fax {attachment}'.format(attachment=attachment)
         self.outer['To'] = ', '.join(recipient for recipient in self.recipients)
@@ -67,8 +74,7 @@ class Email():
 
         # TODO: Dosyanın öznitelik bilgileri eklenecek.
 
-        html = """\
-        <html>
+        html = """<html>
             <head></head>
             <body>
                 <p>
@@ -89,6 +95,10 @@ class Email():
         self.__attach_file(attachment)
 
     def __prepare_connection(self):
+        """
+        Check and prepare connection variables with given kwargs
+        :return:
+        """
         # If port kwarg is None and tls kwarg is False than self.port is 25
         # If Port kwarg is None and tls kwarg is True than self.port is 587
         # Otherwise self.port is port kwarg
@@ -112,6 +122,11 @@ class Email():
             raise Exception("Recipient(s) not specified")
 
     def _connection(self, stop=False):
+        """
+        If stop kwarg True then start connection else stop connection
+        :param stop: bool
+        :return: None
+        """
         if not stop:
             self.smtp = smtplib.SMTP()
             self.__prepare_connection()
@@ -124,6 +139,18 @@ class Email():
 
     def send(self, host=str(), port=None, tls=False, user=str(), password=str(),
              sender=str(), recipients=list(), attachments=list()):
+        """
+        Make SMTP connection and send mail per attachments and return sent attachments list
+        :param host:
+        :param port:
+        :param tls:
+        :param user:
+        :param password:
+        :param sender:
+        :param recipients:
+        :param attachments:
+        :return: list()
+        """
 
         self.host = host
         self.port = port
@@ -143,4 +170,5 @@ class Email():
             self.sent_attachments.append(attachment)
 
         self._connection(stop=True)
+
         return self.sent_attachments
