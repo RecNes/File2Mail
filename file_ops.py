@@ -23,10 +23,17 @@ class FSTools():
             raise Exception(u"No directory name or path given.")
         self.directory = directory
 
+    @property
+    def user_path(self):
+        return os.path.expanduser("~")
+
+    def target_dir_path(self):
+        return os.path.join(self.user_path, self.directory)
+
     def make_directory(self):
         created = False
         try:
-            os.makedirs(self.directory)
+            os.makedirs(self.target_dir_path())
             created = True
         except Exception as e:
             log.exception(e.message)
@@ -34,7 +41,8 @@ class FSTools():
             return created
 
     def check_directory(self):
-        return os.path.exists(self.directory)
+        print self.target_dir_path()
+        return os.path.exists(self.target_dir_path())
 
     def safe_make_directory(self):
         if not self.check_directory():
@@ -44,13 +52,6 @@ class FSTools():
                 log.info(u"Directory created: <<{directory}>>".format(directory=self.directory))
         else:
             log.warning(u"Directory exsists: <<{directory}>>".format(directory=self.directory))
-
-    @property
-    def user_path(self):
-        return os.path.expanduser("~")
-
-    def target_dir_path(self):
-        return os.path.join(self.user_path, self.directory)
 
 
 class GetFileList():
@@ -62,9 +63,12 @@ class GetFileList():
         self.target_dir = u"Documents\\Gelen Fax" if target_dir is None else target_dir
         self.fstools = FSTools(self.target_dir)
         self.target_dir_path = self.fstools.target_dir_path()
+        log.info("Getting file list in {target}".format(target=self.target_dir_path))
         self.file_list = os.listdir(self.target_dir_path)
         self.filtered_list = self.exclude_files()
         self.full_file_list = [os.path.join(self.target_dir_path, f) for f in self.filtered_list]
+        log.info("{count} file{s} found".format(count=len(self.full_file_list),
+                                                s='s' if len(self.full_file_list) > 1 else ''))
 
     def exclude_files(self):
         for x in self.excluded_file_types:
@@ -91,3 +95,6 @@ class MoveSentFile():
                 shutil.move(source_file, self.target_dir_path)
             except Exception as e:
                 log.error(e)
+        log.info("{count} file{s} move to {target}".format(count=len(self.source_files),
+                                                           s='s' if len(self.source_files) > 1 else '',
+                                                           target=self.target_dir_path))

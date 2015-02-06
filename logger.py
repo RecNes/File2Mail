@@ -21,15 +21,17 @@ class Logger:
         self.formatter = None
         self.handler = handler
         self.level = 'INFO'
-        self.log_format = u"%(asctime)s %(levelname)s %(name)s %(process)d %(threadName)s %(module)s: " \
-                          u"%(lineno)d %(funcName)s() %(message)s\r\n"
+        # self.log_format = u"%(asctime)s %(levelname)s %(name)s %(process)d %(threadName)s %(module)s: " \
+        #                   u"%(lineno)d %(funcName)s() %(message)s\r\n"
+        self.log_format = u"%(levelname)s %(asctime)s %(module)s: %(lineno)d %(funcName)s() %(message)s\r\n"
         self.__configure_level(level.upper())
         self.__configure_format(log_format)
         self.__configure_handler(log_dir)
 
     def __configure_level(self, level):
-        if level.upper() not in ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']:
-            raise Exception(u"{} geçerli bir log seviyesi değil".format(level))
+        vlevels = ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']  # Valid levels
+        if level.upper() not in vlevels:
+            raise Exception(u"{level} is not a valid level, valid levels are ".format(level=level, vlevel=repr(vlevels)))
         self.level = SETTINGS["log_level"] if SETTINGS["log_level"] else self.level
 
     def __configure_format(self, log_format):
@@ -38,10 +40,10 @@ class Logger:
         self.formatter = logging.Formatter(self.log_format)
 
     def __configure_handler(self, log_dir):
-        _dir = '{}/{}'.format(PROJECT_ROOT, log_dir)
+        _dir = '{PROJECT_ROOT}/{log_dir}'.format(PROJECT_ROOT=PROJECT_ROOT, log_dir=log_dir)
         if not os.path.exists(_dir):
             os.mkdir(_dir)
-        _filename = "{}/{}.log".format(_dir, self.log_name)
+        _filename = "{dir}/{log_name}.log".format(dir=_dir, log_name=self.log_name)
         self.handler = logging.FileHandler(_filename, mode="a", encoding="utf-8")
         self.handler.setFormatter(self.formatter)
 

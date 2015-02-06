@@ -10,12 +10,14 @@ from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from logger import log
 
 __author__ = 'Sencer Hamarat'
 
 
 class Email():
     def __init__(self):
+        log.debug("Email Class initiated")
         self.host = str()
         self.port = int()
         self.tls = False
@@ -35,7 +37,9 @@ class Email():
         :param attachment:
         :return: None
         """
+        log.info("{attachment} file prepairing to attach...".format(attachment=attachment))
         ctype, encoding = mimetypes.guess_type(attachment)
+        log.debug("File type and encoding is: {ctype} / {encoding}".format(ctype=ctype, encoding=encoding))
         if ctype is None or encoding is not None:
             ctype = 'application/octet-stream'
         maintype, subtype = ctype.split('/', 1)
@@ -60,13 +64,14 @@ class Email():
             # Base64 Encoding kullanarak yükleme
             encoders.encode_base64(msg)
         msg.add_header('Content-Disposition', 'attachment', filename=attachment)
+        log.info("File attached to message.")
         self.outer.attach(msg)
 
     def _prepare_email(self, attachment):
         """
         Prepare e-mail body and append attachments
         """
-
+        log.info("Mail prepairing to send...")
         self.outer = MIMEMultipart()
         self.outer['Subject'] = 'You have a new fax {attachment}'.format(attachment=attachment)
         self.outer['To'] = ', '.join(recipient for recipient in self.recipients)
@@ -92,6 +97,7 @@ class Email():
         """.format(attachment=attachment)
         self.outer.attach(MIMEText(html, 'html'))
         self.outer.preamble = attachment
+        log.info("Message added to mail.")
         self.__attach_file(attachment)
 
     def __prepare_connection(self):
@@ -108,6 +114,7 @@ class Email():
             self.port = 25
         else:
             pass
+        log.debug("Port setted to {port}".format(port=self.port))
 
         if not self.host:
             raise Exception("Host not specified")
@@ -128,14 +135,22 @@ class Email():
         :return: None
         """
         if not stop:
+            log.info("Connecting to <<{host}>> host...".format(host=self.host))
             self.smtp = smtplib.SMTP()
             self.__prepare_connection()
             self.smtp.connect(self.host, self.port)
+            log.info("Connected to <<{host}>> host".format(host=self.host))
+
             if self.tls:
+                log.info("Starting TLS...")
                 self.smtp.starttls()
+                log.info("TLS Started.")
+            log.info("Logging in with user credentials...")
             self.smtp.login(self.user, self.password)
+            log.info("Logged in.")
         else:
             self.smtp.quit()
+            log.info("Connection to <<{host}>> is now closed.")
 
     def send(self, host=str(), port=None, tls=False, user=str(), password=str(),
              sender=str(), recipients=list(), attachments=list()):
@@ -166,7 +181,9 @@ class Email():
         for attachment in attachments:
             self._prepare_email(attachment)
             self.composed = self.outer.as_string()
+            log.info("{file} is now sending".format(file=attachment))
             self.smtp.sendmail(self.sender, self.recipients, self.composed)
+            log.info("{file} is sent".format(file=attachment))
             self.sent_attachments.append(attachment)
 
         self._connection(stop=True)
