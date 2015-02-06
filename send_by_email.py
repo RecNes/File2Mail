@@ -102,9 +102,9 @@ class Email():
         # If port kwarg is None and tls kwarg is False than self.port is 25
         # If Port kwarg is None and tls kwarg is True than self.port is 587
         # Otherwise self.port is port kwarg
-        if self.port is None and self.tls:
+        if self.tls and not self.port:
             self.port = 587
-        elif self.port is None and not self.tls:
+        elif not self.port and not self.tls:
             self.port = 25
         else:
             pass
