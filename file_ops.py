@@ -69,10 +69,6 @@ class GetFileList():
         self.exclude_directories()
         self.exclude_files()
 
-        log.info("{count} file{s} found".format(count=len(self.file_list),
-                                                s='s' if len(self.file_list) > 1 else ''))
-        sys.exit()
-
     def exclude_directories(self):
         for f in self.file_list:
             if os.path.isdir(f):
@@ -87,6 +83,8 @@ class GetFileList():
     def filtered_list(self):
         if not len(self.file_list):
             raise Exception("There is no file found.")
+        log.info("{count} file{s} found".format(count=len(self.file_list),
+                                                s='s' if len(self.file_list) > 1 else ''))
         return self.file_list
 
 
