@@ -30,9 +30,9 @@ class ConfigLoader():
             try:
                 for line in self.content:
                     if (not line.startswith('#')) and ('=' in line):
-                        line = line.replace('\r', '').replace('\n', '').replace(' ', '')
+                        line = line.replace('\r', '').replace('\n', '')
                         key, value = line.split('=')
-                        self.config[key] = value
+                        self.config[key.strip()] = value.strip()
             except Exception as e:
                 raise Exception(e.message.join(u"Error in configuration file: <<{file}>>".format(file=self.file)))
 
@@ -44,6 +44,8 @@ class ConfigLoader():
 
             if "sent_directory" not in self.config or not self.config["sent_directory"]:
                 self.config["excluded_files"] = []
+            elif isinstance(self.config["excluded_files"], str):
+                self.config["excluded_files"] = ast.literal_eval(self.config["excluded_files"])
 
             if "log_level" not in self.config:
                 self.config["log_level"] = ''
