@@ -4,7 +4,6 @@ Application file operations
 """
 import os
 import shutil
-import sys
 from logger import log
 from settings import SETTINGS
 
@@ -102,4 +101,4 @@ class MoveSentFile():
             shutil.move(self.source_file, self.target_dir)
         except Exception as e:
             raise Exception(e)
-        log.info("<<{file}>> moved to <<{target}>>".format(file=self.source_file, target=self.target_dir))
+        log.info("<<{file}>> moved to <<{target}>>".format(file=repr(self.source_file), target=repr(self.target_dir)))
