@@ -43,7 +43,6 @@ class FSTools():
             return created
 
     def check_directory(self):
-        print self.target_dir_path()
         return os.path.exists(self.target_dir_path())
 
     def safe_make_directory(self):
