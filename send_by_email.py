@@ -11,6 +11,7 @@ from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from logger import log
+from settings import SETTINGS
 
 __author__ = 'Sencer Hamarat'
 
@@ -152,28 +153,20 @@ class Email():
             self.smtp.quit()
             log.info("Connection to <<{host}>> is now closed.")
 
-    def send(self, host=str(), port=None, tls=False, user=str(), password=str(),
-             sender=str(), recipients=list(), attachments=list()):
+    def send(self, attachments=list()):
         """
         Make SMTP connection and send mail per attachments and return sent attachments list
-        :param host:
-        :param port:
-        :param tls:
-        :param user:
-        :param password:
-        :param sender:
-        :param recipients:
         :param attachments:
         :return: list()
         """
+        self.host = SETTINGS["host"]
+        self.port = SETTINGS["port"]
+        self.tls = SETTINGS["tls"]
+        self.user = SETTINGS["user"]
+        self.password = SETTINGS["password"]
+        self.sender = SETTINGS["sender"]
+        self.recipients = SETTINGS["recipients"]
 
-        self.host = host
-        self.port = port
-        self.tls = tls
-        self.user = user
-        self.password = password
-        self.sender = sender
-        self.recipients = recipients
         self.attachments = attachments
 
         self._connection()
