@@ -36,14 +36,13 @@ class ConfigLoader():
             except Exception as e:
                 raise Exception(e.message.join(u"Error in configuration file: <<{file}>>".format(file=self.file)))
 
-            if not hasattr(self.config, "log_level"):
+            if "log_level" not in self.config:
                 self.config["log_level"] = ''
 
             if self.config["port"]:
                 self.config["port"] = int(self.config["port"])
 
             self.config["recipients"] = ast.literal_eval(self.config["recipients"])
-
             return self.config
         except Exception as e:
             raise Exception(e.message)
