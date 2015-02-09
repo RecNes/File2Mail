@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import sys
 from file_ops import GetFileList, MoveSentFile
 from logger import log
 from send_by_email import Email
@@ -13,7 +14,7 @@ class Main():
         self.email = Email()
 
     def start_and_run(self):
-        file_list = GetFileList().full_file_list
+        file_list = GetFileList().filtered_files
 
         if len(file_list):
             sent_files = self.email.send(host=SETTINGS["host"], port=SETTINGS["port"], tls=SETTINGS["tls"],
@@ -24,7 +25,7 @@ class Main():
             raise Exception("There is no file found.")
 
         if len(sent_files):
-            move_files = MoveSentFile(target_dir=None, files=sent_files)
+            move_files = MoveSentFile(files=sent_files)
             move_files.do()
         else:
             raise Exception("No files were moved")
@@ -36,7 +37,7 @@ def main():
     except Exception as e:
         log.exception(e.message)
     finally:
-        exit()
+        sys.exit()
 
 if __name__ == "__main__":
     main()
