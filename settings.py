@@ -53,7 +53,11 @@ class ConfigLoader():
             if self.config["port"]:
                 self.config["port"] = int(self.config["port"])
 
-            self.config["recipients"] = ast.literal_eval(self.config["recipients"])
+            if "recipients" not in self.config or not self.config["recipients"]:
+                raise Exception("There is no recipient specified")
+            elif isinstance(self.config["recipients"], str):
+                self.config["recipients"] = ast.literal_eval(self.config["recipients"])
+
             return self.config
         except Exception as e:
             raise Exception(e.message)
