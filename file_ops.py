@@ -49,7 +49,7 @@ class FSTools():
     def safe_make_directory(self):
         if not self.check_directory():
             if not self.make_directory():
-                log.error(u"Unable to create directory: <<{directory}>>".format(directory=self.directory))
+                raise Exception(u"Unable to create directory: <<{directory}>>".format(directory=self.directory))
             else:
                 log.info(u"Directory created: <<{directory}>>".format(directory=self.directory))
         else:
