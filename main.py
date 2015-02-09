@@ -3,8 +3,6 @@ import sys
 from file_ops import GetFileList, MoveSentFile
 from logger import log
 from send_by_email import Email
-from settings import SETTINGS
-
 
 __author__ = 'Sencer Hamarat'
 
@@ -17,15 +15,9 @@ class Main():
         file_list = GetFileList().filtered_files
 
         if len(file_list):
-            sent_files = self.email.send(attachments=file_list)
+            self.email.send(attachments=file_list)
         else:
             raise Exception("There is no file found.")
-
-        if len(sent_files):
-            move_files = MoveSentFile(files=sent_files)
-            move_files.do()
-        else:
-            raise Exception("No files were moved")
 
 
 def main():

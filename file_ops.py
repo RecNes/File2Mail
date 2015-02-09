@@ -90,18 +90,15 @@ class MoveSentFile():
     """
     Moves file in given directory to target directory
     """
-    def __init__(self, files=None):
+    def __init__(self, sent_file=None):
         self.fstools = FSTools(SETTINGS["sent_directory"])
         self.fstools.safe_make_directory()
-        self.target_dir_path = self.fstools.target_dir_path()
-        self.source_files = files
+        self.target_dir = self.fstools.target_dir_path()
+        self.source_file = sent_file
 
     def do(self):
-        for source_file in self.source_files:
-            try:
-                shutil.move(source_file, self.target_dir_path)
-            except Exception as e:
-                log.error(e)
-        log.info("{count} file{s} move to {target}".format(count=len(self.source_files),
-                                                           s='s' if len(self.source_files) > 1 else '',
-                                                           target=self.target_dir_path))
+        try:
+            shutil.move(self.source_file, self.target_dir)
+        except Exception as e:
+            raise Exception(e)
+        log.info("<<{file}>> moved to <<{target}>>".format(file=self.source_file, target=self.target_dir))

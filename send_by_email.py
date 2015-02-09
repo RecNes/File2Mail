@@ -10,6 +10,7 @@ from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from file_ops import MoveSentFile
 from logger import log
 from settings import SETTINGS
 
@@ -30,7 +31,6 @@ class Email():
         self.outer = None
         self.attachments = list()
         self.smtp = None
-        self.sent_attachments = list()
 
     def __attach_file(self, attachment):
         """
@@ -177,8 +177,6 @@ class Email():
             log.info("{file} is now sending".format(file=attachment))
             self.smtp.sendmail(self.sender, self.recipients, self.composed)
             log.info("{file} is sent".format(file=attachment))
-            self.sent_attachments.append(attachment)
+            MoveSentFile(sent_file=attachment).do()
 
         self._connection(stop=True)
-
-        return self.sent_attachments
