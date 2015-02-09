@@ -168,7 +168,6 @@ class Email():
         self.recipients = SETTINGS["recipients"]
 
         self.attachments = attachments
-
         self._connection()
 
         for attachment in attachments:
