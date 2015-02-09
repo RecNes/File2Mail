@@ -17,10 +17,7 @@ class Main():
         file_list = GetFileList().filtered_files
 
         if len(file_list):
-            sent_files = self.email.send(host=SETTINGS["host"], port=SETTINGS["port"], tls=SETTINGS["tls"],
-                                         user=SETTINGS["user"], password=SETTINGS["password"],
-                                         sender=SETTINGS["sender"], recipients=SETTINGS["recipients"],
-                                         attachments=file_list)
+            sent_files = self.email.send(attachments=file_list)
         else:
             raise Exception("There is no file found.")
 
