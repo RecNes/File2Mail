@@ -20,7 +20,8 @@ class ConfigLoader():
         Reads settings from file2mail.conf file and applies evaluations to necessary values
         :return: dict()
         """
-        try:
+        # try:
+        if True:
             if os.path.isfile(self.file):
                 with open(self.file, mode='r') as _file:
                     self.content = _file.readlines()
@@ -39,12 +40,12 @@ class ConfigLoader():
             if "target_directory" not in self.config or not self.config["target_directory"]:
                 raise Exception("Target directory is not specified")
             else:
-                self.config["target_directory"] = unicode(self.config["target_directory"])
+                self.config["target_directory"] = self.config["target_directory"].decode("utf-8")
 
             if "sent_directory" not in self.config or not self.config["sent_directory"]:
                 raise Exception("Sent directory is not specified")
             else:
-                self.config["sent_directory"] = unicode(self.config["sent_directory"])
+                self.config["sent_directory"] = self.config["sent_directory"].decode("utf-8")
 
             if "excluded_files" not in self.config or not self.config["excluded_files"]:
                 self.config["excluded_files"] = []
@@ -63,8 +64,8 @@ class ConfigLoader():
                 self.config["recipients"] = ast.literal_eval(self.config["recipients"])
 
             return self.config
-        except Exception as e:
-            raise Exception(e.message)
+        # except Exception as e:
+        #     raise Exception(e.message)
 
 
 PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
