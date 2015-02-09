@@ -68,9 +68,13 @@ class GetFileList():
         self.exclude_files()
 
     def exclude_directories(self):
-        for f in self.file_list:
-            if os.path.isdir(f):
-                self.file_list.pop(self.file_list.index(f))
+        # assert 0, self.file_list[-1:][0].encode('utf-8').decode('iso-8859-9')
+        try:
+            for f in self.file_list:
+                if os.path.isdir(f.encode('utf-8').decode('iso-8859-9')):
+                    self.file_list.pop(self.file_list.index(f))
+        except Exception as e:
+            raise Exception(e.message)
 
     def exclude_files(self):
         for x in SETTINGS["excluded_files"]:
@@ -83,6 +87,7 @@ class GetFileList():
             raise Exception("There is no file found.")
         log.info("{count} file{s} found".format(count=len(self.file_list),
                                                 s='s' if len(self.file_list) > 1 else ''))
+        assert 0, self.file_list
         return self.file_list
 
 
