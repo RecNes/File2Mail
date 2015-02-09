@@ -38,11 +38,15 @@ class ConfigLoader():
 
             if "target_directory" not in self.config or not self.config["target_directory"]:
                 raise Exception("Target directory is not specified")
+            else:
+                self.config["target_directory"] = unicode(self.config["target_directory"])
 
             if "sent_directory" not in self.config or not self.config["sent_directory"]:
                 raise Exception("Sent directory is not specified")
+            else:
+                self.config["sent_directory"] = unicode(self.config["sent_directory"])
 
-            if "sent_directory" not in self.config or not self.config["sent_directory"]:
+            if "excluded_files" not in self.config or not self.config["excluded_files"]:
                 self.config["excluded_files"] = []
             elif isinstance(self.config["excluded_files"], str):
                 self.config["excluded_files"] = ast.literal_eval(self.config["excluded_files"])
