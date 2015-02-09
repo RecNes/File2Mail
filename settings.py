@@ -36,6 +36,15 @@ class ConfigLoader():
             except Exception as e:
                 raise Exception(e.message.join(u"Error in configuration file: <<{file}>>".format(file=self.file)))
 
+            if "target_directory" not in self.config or not self.config["target_directory"]:
+                raise Exception("Target directory is not specified")
+
+            if "sent_directory" not in self.config or not self.config["sent_directory"]:
+                raise Exception("Sent directory is not specified")
+
+            if "sent_directory" not in self.config or not self.config["sent_directory"]:
+                self.config["excluded_files"] = []
+
             if "log_level" not in self.config:
                 self.config["log_level"] = ''
 
