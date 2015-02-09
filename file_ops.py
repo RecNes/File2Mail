@@ -61,13 +61,11 @@ class GetFileList():
     Returns files list in given target directory
     """
     def __init__(self):
-        self.excluded_file_types = SETTINGS["excluded_files"] if SETTINGS["excluded_files"] else []
-        self.target_dir = SETTINGS["target_directory"]
-        self.fstools = FSTools(self.target_dir)
-        self.target_dir_path = self.fstools.target_dir_path()
-        log.info("Getting file list in {target}".format(target=self.target_dir_path))
-        self.file_list = os.listdir(self.target_dir_path)
-        self.file_list = [os.path.join(self.target_dir_path, f) for f in self.file_list]
+        self.fstools = FSTools(SETTINGS["target_directory"])
+        self.target_dir = self.fstools.target_dir_path()
+        log.info("Getting file list in {target}".format(target=self.target_dir))
+        self.file_list = os.listdir(self.target_dir)
+        self.file_list = [os.path.join(self.target_dir, f) for f in self.file_list]
         log.debug(self.file_list)
         self.exclude_directories()
         log.debug(self.file_list)
@@ -85,7 +83,7 @@ class GetFileList():
                 self.file_list.pop(self.file_list.index(f))
 
     def exclude_files(self):
-        for x in self.excluded_file_types:
+        for x in SETTINGS["excluded_files"]:
             for f in self.file_list:
                 if f.endswith(x):
                     self.file_list.pop(self.file_list.index(f))
@@ -95,9 +93,8 @@ class MoveSentFile():
     """
     Moves file in given directory to target directory
     """
-    def __init__(self, target_dir=None, files=None):
-        self.target_dir = SETTINGS["sent_directory"]
-        self.fstools = FSTools(self.target_dir)
+    def __init__(self, files=None):
+        self.fstools = FSTools(SETTINGS["sent_directory"])
         self.fstools.safe_make_directory()
         self.target_dir_path = self.fstools.target_dir_path()
         self.source_files = files
