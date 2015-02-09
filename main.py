@@ -10,19 +10,12 @@ __author__ = 'Sencer Hamarat'
 class Main():
     def __init__(self):
         self.email = Email()
-
-    def start_and_run(self):
-        file_list = GetFileList().filtered_files
-
-        if len(file_list):
-            self.email.send(attachments=file_list)
-        else:
-            raise Exception("There is no file found.")
+        self.email.send(attachments=GetFileList().filtered_list())
 
 
 def main():
     try:
-        Main().start_and_run()
+        Main()
     except Exception as e:
         log.exception(e.message)
     finally:

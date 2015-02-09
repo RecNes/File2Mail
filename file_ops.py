@@ -68,7 +68,6 @@ class GetFileList():
         self.file_list = [os.path.join(self.target_dir, f) for f in self.file_list]
         self.exclude_directories()
         self.exclude_files()
-        self.filtered_files = self.file_list
 
         log.info("{count} file{s} found".format(count=len(self.file_list),
                                                 s='s' if len(self.file_list) > 1 else ''))
@@ -84,6 +83,11 @@ class GetFileList():
             for f in self.file_list:
                 if f.endswith(x):
                     self.file_list.pop(self.file_list.index(f))
+
+    def filtered_list(self):
+        if not len(self.file_list):
+            raise Exception("There is no file found.")
+        return self.file_list
 
 
 class MoveSentFile():
