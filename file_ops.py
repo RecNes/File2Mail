@@ -66,11 +66,8 @@ class GetFileList():
         log.info("Getting file list in {target}".format(target=self.target_dir))
         self.file_list = os.listdir(self.target_dir)
         self.file_list = [os.path.join(self.target_dir, f) for f in self.file_list]
-        log.debug(self.file_list)
         self.exclude_directories()
-        log.debug(self.file_list)
         self.exclude_files()
-        log.debug(self.file_list)
         self.filtered_files = self.file_list
 
         log.info("{count} file{s} found".format(count=len(self.file_list),
