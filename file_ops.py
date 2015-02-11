@@ -4,6 +4,7 @@ Application file operations
 """
 import os
 import shutil
+import sys
 from logger import log
 from settings import SETTINGS
 
@@ -26,7 +27,7 @@ class FSTools():
 
     @property
     def user_path(self):
-        return os.path.expanduser("~")
+        return os.path.expanduser(u"~")
 
     def target_dir_path(self):
         return os.path.join(self.user_path, self.directory)
@@ -66,28 +67,32 @@ class GetFileList():
         self.file_list = [os.path.join(self.target_dir, f) for f in self.file_list]
         self.exclude_directories()
         self.exclude_files()
+        log.info(self.file_list)
+        sys.exit()
 
     def exclude_directories(self):
-        # assert 0, self.file_list[-1:][0].encode('utf-8').decode('iso-8859-9')
+        excluded_dirs = list()
         try:
             for f in self.file_list:
-                if os.path.isdir(f.encode('utf-8').decode('iso-8859-9')):
-                    self.file_list.pop(self.file_list.index(f))
+                if os.path.isdir(f):
+                    excluded_dirs.append(f)
+            self.file_list = set(self.file_list).symmetric_difference(excluded_dirs)
         except Exception as e:
             raise Exception(e.message)
 
     def exclude_files(self):
+        excluded_files = list()
         for x in SETTINGS["excluded_files"]:
             for f in self.file_list:
                 if f.endswith(x):
-                    self.file_list.pop(self.file_list.index(f))
+                    excluded_files.append(f)
+        self.file_list = set(self.file_list).symmetric_difference(excluded_files)
 
     def filtered_list(self):
         if not len(self.file_list):
             raise Exception("There is no file found.")
         log.info("{count} file{s} found".format(count=len(self.file_list),
                                                 s='s' if len(self.file_list) > 1 else ''))
-        assert 0, self.file_list
         return self.file_list
 
 
