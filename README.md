@@ -9,7 +9,7 @@ There is no any cryptography added for hidind your secret. I will change this ap
 
 # Usage
 
-Make necessary changes in file2mail.conf file and add file2mail.py as scheduled tasks and
+Make necessary changes in file2mail.conf file and add file2mail.py as scheduled tasks.
 
 # Requirements
 
