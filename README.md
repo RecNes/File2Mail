@@ -5,7 +5,7 @@ Yes that's what it's do.
 # Security Warning
 
 On this project, you have to write your e-mail password into configuration file wide open. 
-There is no any cryptography added for hidind your secret. I will change this approach on future versions.  
+There is no any cryptography added for hiding your secret. I will change this approach on future versions.  
 
 # Usage
 
