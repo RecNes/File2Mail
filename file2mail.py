@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
-from file_ops import GetFileList, MoveSentFile
+from file_ops import GetFileList
 from logger import log
 from send_by_email import Email
 
