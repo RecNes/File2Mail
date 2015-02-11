@@ -38,7 +38,7 @@ class Email():
         :param attachment:
         :return: None
         """
-        log.info("{attachment} file prepairing to attach...".format(attachment=attachment))
+        log.debug("{attachment} file prepairing to attach...".format(attachment=attachment))
         ctype, encoding = mimetypes.guess_type(attachment)
         log.debug("File type and encoding is: {ctype} / {encoding}".format(ctype=ctype, encoding=encoding))
         if ctype is None or encoding is not None:
@@ -65,14 +65,14 @@ class Email():
             # Base64 Encoding kullanarak yükleme
             encoders.encode_base64(msg)
         msg.add_header('Content-Disposition', 'attachment', filename=attachment)
-        log.info("File attached to message.")
+        log.debug("File attached to message.")
         self.outer.attach(msg)
 
     def _prepare_email(self, attachment):
         """
         Prepare e-mail body and append attachments
         """
-        log.info("Mail prepairing to send...")
+        log.debug("Mail prepairing to send...")
         self.outer = MIMEMultipart()
         self.outer['Subject'] = 'You have a new fax {attachment}'.format(attachment=attachment)
         self.outer['To'] = ', '.join(recipient for recipient in self.recipients)
@@ -98,7 +98,7 @@ class Email():
         """.format(attachment=attachment)
         self.outer.attach(MIMEText(html, 'html'))
         self.outer.preamble = attachment
-        log.info("Message added to mail.")
+        log.debug("Message added to mail.")
         self.__attach_file(attachment)
 
     def __prepare_connection(self):
@@ -151,7 +151,7 @@ class Email():
             log.info("Logged in.")
         else:
             self.smtp.quit()
-            log.info("Connection to <<{host}>> is now closed.")
+            log.info("Connection to <<{host}>> is now closed.".format(host=self.host))
 
     def send(self, attachments=list()):
         """
@@ -173,7 +173,7 @@ class Email():
         for attachment in attachments:
             self._prepare_email(attachment)
             self.composed = self.outer.as_string()
-            log.info("{file} is now sending".format(file=attachment))
+            log.debug("{file} is now sending".format(file=attachment))
             self.smtp.sendmail(self.sender, self.recipients, self.composed)
             log.info("{file} is sent".format(file=attachment))
             MoveSentFile(sent_file=attachment).do()
