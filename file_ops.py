@@ -4,7 +4,6 @@ Application file operations
 """
 import os
 import shutil
-import sys
 from logger import log
 from settings import SETTINGS
 
@@ -67,18 +66,14 @@ class GetFileList():
         self.file_list = [os.path.join(self.target_dir, f) for f in self.file_list]
         self.exclude_directories()
         self.exclude_files()
-        log.info(self.file_list)
-        sys.exit()
 
     def exclude_directories(self):
         excluded_dirs = list()
-        try:
-            for f in self.file_list:
-                if os.path.isdir(f):
-                    excluded_dirs.append(f)
-            self.file_list = set(self.file_list).symmetric_difference(excluded_dirs)
-        except Exception as e:
-            raise Exception(e.message)
+        for f in self.file_list:
+            if os.path.isdir(f):
+                excluded_dirs.append(f)
+        log.debug("Directories are removed from list: {}".format(repr(excluded_dirs)))
+        self.file_list = set(self.file_list).symmetric_difference(excluded_dirs)
 
     def exclude_files(self):
         excluded_files = list()
@@ -86,11 +81,13 @@ class GetFileList():
             for f in self.file_list:
                 if f.endswith(x):
                     excluded_files.append(f)
+        log.debug("Files are removed from list: {}".format(repr(excluded_files)))
         self.file_list = set(self.file_list).symmetric_difference(excluded_files)
 
     def filtered_list(self):
         if not len(self.file_list):
             raise Exception("There is no file found.")
+        log.debug("File List Prepared to send : {}".format(self.file_list))
         log.info("{count} file{s} found".format(count=len(self.file_list),
                                                 s='s' if len(self.file_list) > 1 else ''))
         return self.file_list
@@ -107,8 +104,5 @@ class MoveSentFile():
         self.source_file = sent_file
 
     def do(self):
-        try:
-            shutil.move(self.source_file, self.target_dir)
-        except Exception as e:
-            raise Exception(e)
-        log.info("<<{file}>> moved to <<{target}>>".format(file=repr(self.source_file), target=repr(self.target_dir)))
+        shutil.move(self.source_file, self.target_dir)
+        log.debug("<<{file}>> moved to <<{target}>>".format(file=repr(self.source_file), target=repr(self.target_dir)))
