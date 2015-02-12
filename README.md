@@ -14,6 +14,7 @@ There is no any cryptography added for hiding your secret. Will be changed this 
 
 * Clone the project by git or download it as ZIP package. 
 * Place the files where ever you want.
+* Rename *file2mail-example.conf* to *file2mail.conf*
 * Make necessary changes in file2mail.conf file 
 * Add file2mail.py as scheduled tasks.
 * While creating a new scheduled task make sure *"C:\Python27\python.exe"* added to **Program/Script** line, and
