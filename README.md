@@ -22,7 +22,7 @@ Make sure [*Python 2.7*](https://www.python.org/downloads/) installed on your sy
 * Make necessary changes in file2mail.conf file 
 * Add file2mail.py as scheduled tasks.
 * While creating a new scheduled task make sure *"C:\Python27\python.exe"* added to **Program/Script** line, and
-*"C:\Users\user\path_to\File2Mail\file2mail.py"* added to **Add Arguments (Optional)** line.
+"C:\Users\user\path_to\File2Mail\file2mail.py"* added to **Add Arguments (Optional)** line.
 
 ["How To" link for "Scheduled Task"](http://windows.microsoft.com/en-us/windows/schedule-task#1TC=windows-7)
 
