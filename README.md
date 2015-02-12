@@ -17,7 +17,7 @@ Make necessary changes in file2mail.conf file and add file2mail.py as scheduled 
 
 ## Notes:
 
-This project written as a windows project. Not tested yet, but it may able to run under Linux.
+This project written as a Windows project. Not tested yet, but it may able to run under Linux.
 
 ## Requirements
 
