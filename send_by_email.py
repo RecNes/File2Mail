@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Prepare and send files as attachment by e-mail
-"""
 import smtplib
 import mimetypes
 from email import encoders
@@ -18,6 +15,9 @@ __author__ = 'Sencer Hamarat'
 
 
 class Email():
+    """
+    Prepare and send files as attachment by e-mail
+    """
     def __init__(self):
         log.debug("Email Class initiated")
         self.host = str()
