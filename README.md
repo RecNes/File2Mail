@@ -10,6 +10,10 @@ This project written for an all-in-one printer, which has no "send incoming faxe
 On this project, you have to write your e-mail password into configuration file wide open. 
 There is no any cryptography added for hiding your secret. Will be changed this approach on future versions.  
 
+## Requirements
+
+Make sure [*Python 2.7*](https://www.python.org/downloads/) installed on your system.
+
 ## Usage / Installation
 
 * Clone the project by git or download it as ZIP package. 
@@ -25,9 +29,5 @@ There is no any cryptography added for hiding your secret. Will be changed this 
 ## Notes:
 
 This project written as a *Windows* project. Not tested yet, but it may able to run under Linux.
-
-## Requirements
-
-Make sure *Python 2.7* installed on your system.
 
 File2Mail by Sencer Hamarat - 2015 
