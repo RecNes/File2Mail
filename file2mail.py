@@ -17,7 +17,7 @@ def main():
     try:
         Main()
     except Exception as e:
-        log.exception(e.message)
+        log.info(e.message)
     finally:
         sys.exit()
 
