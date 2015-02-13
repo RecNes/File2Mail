@@ -24,7 +24,7 @@ class ConfigLoader():
             with open(self.file, mode='r') as _file:
                 self.content = _file.readlines()
         else:
-            raise Exception(u'Configuration file not found: <<{file}>>'.format(file=self.file))
+            raise Exception("Configuration file not found: {file}".format(file=self.file))
 
         try:
             for line in self.content:
@@ -33,7 +33,7 @@ class ConfigLoader():
                     key, value = line.split('=')
                     self.config[key.strip()] = value.strip()
         except Exception as e:
-            raise Exception(e.message.join(u"Error in configuration file: <<{file}>>".format(file=self.file)))
+            raise Exception(e.message.join("Error in configuration file: {file}".format(file=self.file)))
 
         if "target_directory" not in self.config or not self.config["target_directory"]:
             raise Exception("Target directory is not specified")

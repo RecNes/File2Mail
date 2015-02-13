@@ -21,9 +21,9 @@ class Logger:
         self.formatter = None
         self.handler = handler
         self.level = 'INFO'
-        # self.log_format = u"%(asctime)s %(levelname)s %(name)s %(process)d %(threadName)s %(module)s: " \
-        #                   u"%(lineno)d %(funcName)s() %(message)s\r\n"
-        self.log_format = u"%(levelname)s %(asctime)s %(module)s: %(lineno)d %(funcName)s() %(message)s\r\n"
+        # self.log_format = "%(asctime)s %(levelname)s %(name)s %(process)d %(threadName)s %(module)s: " \
+        #                   "%(lineno)d %(funcName)s() %(message)s\r\n"
+        self.log_format = "%(levelname)s %(asctime)s %(module)s: %(lineno)d %(funcName)s() %(message)s\r\n"
         self.__configure_level(level.upper())
         self.__configure_format(log_format)
         self.__configure_handler(log_dir)
@@ -31,7 +31,7 @@ class Logger:
     def __configure_level(self, level):
         vlevels = ['CRITICAL', 'ERROR', 'WARNING', 'INFO', 'DEBUG']  # Valid levels
         if level.upper() not in vlevels:
-            raise Exception(u"{level} is not a valid level, valid levels are ".format(level=level, vlevel=repr(vlevels)))
+            raise Exception("{level} is not a valid level, valid levels are ".format(level=level, vlevel=repr(vlevels)))
         self.level = SETTINGS["log_level"] if SETTINGS["log_level"] else self.level
 
     def __configure_format(self, log_format):

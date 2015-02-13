@@ -136,11 +136,11 @@ class Email():
         :return: None
         """
         if not stop:
-            log.info("Connecting to <<{host}>> host...".format(host=self.host))
+            log.info("Connecting to {host} host...".format(host=self.host))
             self.smtp = smtplib.SMTP()
             self.__prepare_connection()
             self.smtp.connect(self.host, self.port)
-            log.info("Connected to <<{host}>> host".format(host=self.host))
+            log.info("Connected to {host} host".format(host=self.host))
 
             if self.tls:
                 log.info("Starting TLS...")
@@ -151,7 +151,7 @@ class Email():
             log.info("Logged in.")
         else:
             self.smtp.quit()
-            log.info("Connection to <<{host}>> is now closed.".format(host=self.host))
+            log.info("Connection to {host} is now closed.".format(host=self.host))
 
     def send(self, attachments=list()):
         """
