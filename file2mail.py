@@ -14,11 +14,12 @@ class Main():
 
 
 def main():
-    try:
+    # try:
         Main()
-    except Exception as e:
-        log.info(e.message)
-    finally:
+    # except Exception as e:
+    #     print "An error occured! Please take a look at log file to see error."
+    #     log.info(e.message)
+    # finally:
         sys.exit()
 
 if __name__ == "__main__":

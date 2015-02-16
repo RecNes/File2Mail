@@ -7,6 +7,8 @@ from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from socket import gaierror
+from twisted.python.win32 import WindowsError
 from file_ops import MoveSentFile
 from logger import log
 from settings import SETTINGS
@@ -139,8 +141,15 @@ class Email():
             log.info("Connecting to {host} host...".format(host=self.host))
             self.smtp = smtplib.SMTP()
             self.__prepare_connection()
-            self.smtp.connect(self.host, self.port)
-            log.info("Connected to {host} host".format(host=self.host))
+            try:
+                self.smtp.connect(self.host, self.port)
+                log.info("Connected to {host} host".format(host=self.host))
+            except WindowsError as e:
+                raise Exception(e.message)
+            except gaierror as e:
+                raise Exception(e[1])
+            # except Exception as e:
+            #     raise Exception(e.message)
 
             if self.tls:
                 log.info("Starting TLS...")
