@@ -47,12 +47,13 @@ class FSTools():
 
     def safe_make_directory(self):
         if not self.check_directory():
+            log.warning("Directory does not exists: {directory}".format(directory=self.directory))
             if not self.make_directory():
                 raise Exception("Unable to create directory: {directory}".format(directory=self.directory))
             else:
                 log.info("Directory created: {directory}".format(directory=self.directory))
         else:
-            log.warning("Directory exsists: {directory}".format(directory=self.directory))
+            log.warning("Directory exists: {directory}".format(directory=self.directory))
 
 
 class GetFileList():
@@ -61,7 +62,7 @@ class GetFileList():
     """
     def __init__(self):
         self.fstools = FSTools(SETTINGS["target_directory"])
-        log.debug(self.fstools.check_directory())
+        self.fstools.safe_make_directory()
         self.target_dir = self.fstools.target_dir_path()
         log.info("Getting file list in {target}".format(target=self.target_dir))
         self.file_list = os.listdir(self.target_dir)
