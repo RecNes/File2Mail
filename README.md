@@ -3,7 +3,7 @@
 Sent files in specificied directory under user home directory by email, and move sent files to sent directory.
 
 ## The aim of this project
-This project written for an all-in-one printer, which has no "send incoming faxes by email" feature. But you can use anywhere else.
+This project written for an all-in-one printer, which has no "forward incoming faxes by email" feature. But you can use anywhere else.
 
 ## Security Warning
 
@@ -28,6 +28,6 @@ Make sure [*Python 2.7*](https://www.python.org/downloads/) installed on your sy
 
 ## Notes:
 
-This project written as a *Windows* project. Not tested yet, but it may able to run under Linux.
+This project written as a *Windows* project. Not tested yet, but it may able to run under *Linux*.
 
 File2Mail by Sencer Hamarat - 2015 
