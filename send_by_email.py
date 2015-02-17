@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import smtplib
-import mimetypes
 from email import encoders
 from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from file_ops import MoveSentFile
+from file_ops import MoveSentFile, FSTools
 from logger import log
 from settings import SETTINGS
 
@@ -39,7 +38,8 @@ class Email():
         :return: None
         """
         log.debug(u"{attachment} file prepairing to attach...".format(attachment=attachment))
-        ctype, encoding = mimetypes.guess_type(attachment)
+        fstools = FSTools(attachment=attachment)
+        ctype, encoding = fstools.get_file_type()
         log.debug("File type and encoding is: {ctype} / {encoding}".format(ctype=ctype, encoding=encoding))
         if ctype is None or encoding is not None:
             ctype = 'application/octet-stream'
@@ -78,7 +78,8 @@ class Email():
         self.outer['To'] = ', '.join(recipient for recipient in self.recipients)
         self.outer['From'] = self.sender
 
-        # TODO: Dosyanın öznitelik bilgileri eklenecek.
+        fstools = FSTools(attachment=attachment)
+        filetype, fileenc = fstools.get_file_type()
 
         html = u"""<html>
             <head></head>
@@ -87,15 +88,22 @@ class Email():
                     Hello!
                 </p>
                 <p>
-                    You have a new fax: {attachment}.<br>
+                    You have a new fax: {attachment}.
                     Please take a look at the attachment in this e-mail to see received fax.
+                </p>
+                <p>
+                    Receive Date: {filedate}<br />
+                    File Size: {filesize}<br />
+                    File Type: {filetype}<br />
+                    File Encoding = {fileenc}
                 </p>
                 <p style="float: right;">
                     File2Mail by Sencer Hamarat (C) 2015
                 </p>
             </body>
         </html>
-        """.format(attachment=attachment)
+        """.format(attachment=attachment, filedate=fstools.get_file_ctime(), filetype=filetype,
+                   filesize=fstools.get_file_size(), fileenc=fileenc)
         self.outer.attach(MIMEText(html, 'html'))
         self.outer.preamble = attachment
         log.debug("Message added to mail.")
