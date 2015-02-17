@@ -74,7 +74,7 @@ class Email():
         """
         log.debug("Mail prepairing to send...")
         self.outer = MIMEMultipart()
-        self.outer['Subject'] = u'You have a new fax {attachment}'.format(attachment=attachment.split('\\')[-1])
+        self.outer['Subject'] = u'You have a new fax! ({attachment})'.format(attachment=attachment.split('\\')[-1])
         self.outer['To'] = ', '.join(recipient for recipient in self.recipients)
         self.outer['From'] = self.sender
 
@@ -88,7 +88,7 @@ class Email():
                     Hello!
                 </p>
                 <p>
-                    You have a new fax: <span style="font-weight: bold;"><< {attachment} >></span><br />
+                    You have a new fax: <span style="font-weight: bold;">{attachment}</span><br />
                     Please take a look at the attachment in this e-mail to see received fax.
                 </p>
                 <p>
