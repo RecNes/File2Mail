@@ -88,7 +88,7 @@ class Email():
                     Hello!
                 </p>
                 <p>
-                    You have a new fax: <span style="font-weight: bold;">{attachment}</span><br />
+                    You have a new fax: <span style="font-weight: bold;"><< {attachment} >></span><br />
                     Please take a look at the attachment in this e-mail to see received fax.
                 </p>
                 <p>
