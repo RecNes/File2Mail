@@ -56,10 +56,12 @@ class ConfigLoader():
         if self.config["port"]:
             self.config["port"] = int(self.config["port"])
 
-        if "recipients" not in self.config or not self.config["recipients"]:
-            raise Exception("There is no recipient specified")
-        elif isinstance(self.config["recipients"], str):
+        if "recipients" not in self.config:
+            self.config["recipients"] = []
+        try:
             self.config["recipients"] = ast.literal_eval(self.config["recipients"])
+        except SyntaxError as e:
+            self.config["recipients"] = []
 
         return self.config
 
