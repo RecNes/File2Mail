@@ -2,8 +2,10 @@
 """
 Application file operations
 """
+import mimetypes
 import os
 import shutil
+import time
 from logger import log
 from settings import SETTINGS
 
@@ -19,10 +21,10 @@ class FSTools():
     user_path: Returns current user home directory path
     target_dir_path: Returns given target directory full path under current user
     """
-    def __init__(self, directory=None):
-        if directory is None:
-            raise Exception("No directory name or path given.")
+    def __init__(self, directory=None, attachment=None):
         self.directory = directory
+        self.attachment = attachment
+        self.file_stat = None
 
     @property
     def user_path(self):
@@ -46,6 +48,8 @@ class FSTools():
         return os.path.exists(self.target_dir_path())
 
     def safe_make_directory(self):
+        if self.directory is None:
+            raise Exception("No directory name or path given.")
         if not self.check_directory():
             log.warning(u"Directory does not exists: {directory}".format(directory=self.directory))
             if not self.make_directory():
@@ -54,6 +58,26 @@ class FSTools():
                 log.info(u"Directory created: {directory}".format(directory=self.directory))
         else:
             log.warning(u"Directory exists: {directory}".format(directory=self.directory))
+
+    def get_file_stat(self):
+        return os.stat(self.attachment)
+
+    def get_file_type(self):
+        return mimetypes.guess_type(self.attachment, strict=True)
+
+    def get_file_ctime(self):
+        file_stat = self.get_file_stat()
+        return time.ctime(file_stat.st_ctime)
+
+    def get_file_size(self, suffix='B'):
+        if self.attachment is None:
+            raise Exception("No attachment given.")
+        file_stat = self.get_file_stat()
+        for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
+            if abs(file_stat.st_size) < 1024.0:
+                return "%3.1f%s%s" % (file_stat.st_size, unit, suffix)
+            file_stat.st_size /= 1024.0
+        return "%.1f%s%s" % (file_stat.st_size, 'Yi', suffix)
 
 
 class GetFileList():
