@@ -42,18 +42,18 @@ class FSTools():
             return created
 
     def check_directory(self):
-        log.debug("Checking existence of {directory}".format(directory=self.target_dir_path()))
+        log.debug(u"Checking existence of {directory}".format(directory=self.target_dir_path()))
         return os.path.exists(self.target_dir_path())
 
     def safe_make_directory(self):
         if not self.check_directory():
-            log.warning("Directory does not exists: {directory}".format(directory=self.directory))
+            log.warning(u"Directory does not exists: {directory}".format(directory=self.directory))
             if not self.make_directory():
-                raise Exception("Unable to create directory: {directory}".format(directory=self.directory))
+                raise Exception(u"Unable to create directory: {directory}".format(directory=self.directory))
             else:
-                log.info("Directory created: {directory}".format(directory=self.directory))
+                log.info(u"Directory created: {directory}".format(directory=self.directory))
         else:
-            log.warning("Directory exists: {directory}".format(directory=self.directory))
+            log.warning(u"Directory exists: {directory}".format(directory=self.directory))
 
 
 class GetFileList():
@@ -64,7 +64,7 @@ class GetFileList():
         self.fstools = FSTools(SETTINGS["target_directory"])
         self.fstools.safe_make_directory()
         self.target_dir = self.fstools.target_dir_path()
-        log.info("Getting file list in {target}".format(target=self.target_dir))
+        log.info(u"Getting file list in {target}".format(target=self.target_dir))
         self.file_list = os.listdir(self.target_dir)
         self.file_list = [os.path.join(self.target_dir, f) for f in self.file_list]
         self.exclude_directories()
@@ -75,7 +75,7 @@ class GetFileList():
         for f in self.file_list:
             if os.path.isdir(f):
                 excluded_dirs.append(f)
-        log.debug("Directories are removed from list: {}".format(repr(excluded_dirs)))
+        log.debug(u"Directories are removed from list: {}".format(repr(excluded_dirs)))
         self.file_list = set(self.file_list).symmetric_difference(excluded_dirs)
 
     def exclude_files(self):
@@ -84,13 +84,13 @@ class GetFileList():
             for f in self.file_list:
                 if f.endswith(x):
                     excluded_files.append(f)
-        log.debug("Files are removed from list: {}".format(repr(excluded_files)))
+        log.debug(u"Files are removed from list: {}".format(repr(excluded_files)))
         self.file_list = set(self.file_list).symmetric_difference(excluded_files)
 
     def filtered_list(self):
         if not len(self.file_list):
             raise Exception("There is no file found.")
-        log.debug("File List Prepared to send : {}".format(self.file_list))
+        log.debug(u"File List Prepared to send : {}".format(self.file_list))
         log.info("{count} file{s} found".format(count=len(self.file_list),
                                                 s='s' if len(self.file_list) > 1 else ''))
         return self.file_list
@@ -108,4 +108,4 @@ class MoveSentFile():
 
     def do(self):
         shutil.move(self.source_file, self.target_dir)
-        log.debug("{file} >> moved to >> {target}".format(file=repr(self.source_file), target=repr(self.target_dir)))
+        log.debug(u"{file} >> moved to >> {target}".format(file=repr(self.source_file), target=repr(self.target_dir)))
