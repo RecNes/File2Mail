@@ -64,7 +64,7 @@ class Email():
             fp.close()
             # Base64 Encoding kullanarak yükleme
             encoders.encode_base64(msg)
-        msg.add_header('Content-Disposition', 'attachment', filename=attachment)
+        msg.add_header('Content-Disposition', 'attachment', filename=attachment.split('\\')[-1])
         log.debug("File attached to message.")
         self.outer.attach(msg)
 
@@ -74,7 +74,7 @@ class Email():
         """
         log.debug("Mail prepairing to send...")
         self.outer = MIMEMultipart()
-        self.outer['Subject'] = u'You have a new fax {attachment}'.format(attachment=attachment)
+        self.outer['Subject'] = u'You have a new fax {attachment}'.format(attachment=attachment.split('\\')[-1])
         self.outer['To'] = ', '.join(recipient for recipient in self.recipients)
         self.outer['From'] = self.sender
 
@@ -102,10 +102,10 @@ class Email():
                 </p>
             </body>
         </html>
-        """.format(attachment=attachment, filedate=fstools.get_file_ctime(), filetype=filetype,
+        """.format(attachment=attachment.split('\\')[-1], filedate=fstools.get_file_ctime(), filetype=filetype,
                    filesize=fstools.get_file_size(), fileenc=fileenc)
         self.outer.attach(MIMEText(html, 'html'))
-        self.outer.preamble = attachment
+        self.outer.preamble = attachment.split('\\')[-1]
         log.debug("Message added to mail.")
         self.__attach_file(attachment)
 
