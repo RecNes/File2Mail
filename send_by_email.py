@@ -1,15 +1,12 @@
 # -*- coding: utf-8 -*-
 import smtplib
-import mimetypes
 from email import encoders
 from email.mime.audio import MIMEAudio
 from email.mime.base import MIMEBase
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from socket import gaierror
-from twisted.python.win32 import WindowsError
-from file_ops import MoveSentFile
+from file_ops import MoveSentFile, FSTools
 from logger import log
 from settings import SETTINGS
 
@@ -40,8 +37,9 @@ class Email():
         :param attachment:
         :return: None
         """
-        log.debug("{attachment} file prepairing to attach...".format(attachment=attachment))
-        ctype, encoding = mimetypes.guess_type(attachment)
+        log.debug(u"{attachment} file prepairing to attach...".format(attachment=attachment))
+        fstools = FSTools(attachment=attachment)
+        ctype, encoding = fstools.get_file_type()
         log.debug("File type and encoding is: {ctype} / {encoding}".format(ctype=ctype, encoding=encoding))
         if ctype is None or encoding is not None:
             ctype = 'application/octet-stream'
@@ -66,7 +64,7 @@ class Email():
             fp.close()
             # Base64 Encoding kullanarak yükleme
             encoders.encode_base64(msg)
-        msg.add_header('Content-Disposition', 'attachment', filename=attachment)
+        msg.add_header('Content-Disposition', 'attachment', filename=attachment.split('\\')[-1])
         log.debug("File attached to message.")
         self.outer.attach(msg)
 
@@ -76,30 +74,38 @@ class Email():
         """
         log.debug("Mail prepairing to send...")
         self.outer = MIMEMultipart()
-        self.outer['Subject'] = 'You have a new fax {attachment}'.format(attachment=attachment)
+        self.outer['Subject'] = u'You have a new fax! ({attachment})'.format(attachment=attachment.split('\\')[-1])
         self.outer['To'] = ', '.join(recipient for recipient in self.recipients)
         self.outer['From'] = self.sender
 
-        # TODO: Dosyanın öznitelik bilgileri eklenecek.
+        fstools = FSTools(attachment=attachment)
+        filetype, fileenc = fstools.get_file_type()
 
-        html = """<html>
+        html = u"""<html>
             <head></head>
             <body>
                 <p>
                     Hello!
                 </p>
                 <p>
-                    You have a new fax: {attachment}.<br>
+                    You have a new fax: <span style="font-weight: bold;">{attachment}</span><br />
                     Please take a look at the attachment in this e-mail to see received fax.
+                </p>
+                <p>
+                    Receive Date: {filedate}<br />
+                    File Size: {filesize}<br />
+                    File Type: {filetype}<br />
+                    File Encoding = {fileenc}
                 </p>
                 <p style="float: right;">
                     File2Mail by Sencer Hamarat (C) 2015
                 </p>
             </body>
         </html>
-        """.format(attachment=attachment)
+        """.format(attachment=attachment.split('\\')[-1], filedate=fstools.get_file_ctime(), filetype=filetype,
+                   filesize=fstools.get_file_size(), fileenc=fileenc)
         self.outer.attach(MIMEText(html, 'html'))
-        self.outer.preamble = attachment
+        self.outer.preamble = attachment.split('\\')[-1]
         log.debug("Message added to mail.")
         self.__attach_file(attachment)
 
@@ -117,7 +123,7 @@ class Email():
             self.port = 25
         else:
             pass
-        log.debug("Port setted to {port}".format(port=self.port))
+        log.debug(u"Port setted to {port}".format(port=self.port))
 
         if not self.host:
             raise Exception("Host not specified")
@@ -138,29 +144,31 @@ class Email():
         :return: None
         """
         if not stop:
-            log.info("Connecting to {host} host...".format(host=self.host))
+            log.info(u"Connecting to {host} host...".format(host=self.host))
             self.smtp = smtplib.SMTP()
             self.__prepare_connection()
             try:
                 self.smtp.connect(self.host, self.port)
-                log.info("Connected to {host} host".format(host=self.host))
-            except WindowsError as e:
-                raise Exception(e.message)
-            except gaierror as e:
-                raise Exception(e[1])
-            # except Exception as e:
-            #     raise Exception(e.message)
+                log.info(u"Connected to {host} host".format(host=self.host))
+            except Exception as e:
+                raise Exception(repr(e))
 
             if self.tls:
                 log.info("Starting TLS...")
-                self.smtp.starttls()
-                log.info("TLS Started.")
+                try:
+                    self.smtp.starttls()
+                    log.info("TLS Started.")
+                except Exception as e:
+                    raise Exception(e)
             log.info("Logging in with user credentials...")
-            self.smtp.login(self.user, self.password)
-            log.info("Logged in.")
+            try:
+                self.smtp.login(self.user, self.password)
+                log.info("Logged in.")
+            except Exception as e:
+                raise Exception(e)
         else:
             self.smtp.quit()
-            log.info("Connection to {host} is now closed.".format(host=self.host))
+            log.info(u"Connection to {host} is now closed.".format(host=self.host))
 
     def send(self, attachments=list()):
         """
@@ -175,6 +183,8 @@ class Email():
         self.password = SETTINGS["password"]
         self.sender = SETTINGS["sender"]
         self.recipients = SETTINGS["recipients"]
+        if not len(SETTINGS["recipients"]):
+            raise Exception("There is no recipient specified in configuration file")
 
         self.attachments = attachments
         self._connection()
@@ -182,9 +192,9 @@ class Email():
         for attachment in attachments:
             self._prepare_email(attachment)
             self.composed = self.outer.as_string()
-            log.debug("{file} is now sending".format(file=attachment))
+            log.debug(u"{file} is now sending".format(file=attachment))
             self.smtp.sendmail(self.sender, self.recipients, self.composed)
-            log.info("{file} is sent".format(file=attachment))
+            log.info(u"{file} is sent".format(file=attachment))
             MoveSentFile(sent_file=attachment).do()
 
         self._connection(stop=True)
